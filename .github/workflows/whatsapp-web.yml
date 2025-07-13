@@ -1,23 +1,32 @@
-name: WhatsApp Web Puppeteer
+name: Gerar Token OAuth Permanente com Rclone
 
 on:
   workflow_dispatch:
 
 jobs:
-  run-puppeteer:
+  gerar-token:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Instalar Rclone
+        run: curl https://rclone.org/install.sh | sudo bash
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+      - name: Iniciar configuração Rclone com OAuth
+        run: |
+          mkdir -p ~/.config/rclone
 
-      - name: Install dependencies
-        run: npm install puppeteer
+          echo "::group::Instruções"
+          echo "1. Quando o prompt aparecer, escolha 'n' para novo remote"
+          echo "2. Dê o nome: meudrive"
+          echo "3. Tipo: drive"
+          echo "4. Aceite os padrões até o login"
+          echo "5. Copie o código de autorização gerado"
+          echo "::endgroup::"
 
-      - name: Run Puppeteer script
-        run: node index.js
+          rclone config
+
+      - name: Mostrar Token Gerado
+        run: |
+          echo "::group::rclone.conf (use no PHP)"
+          cat ~/.config/rclone/rclone.conf
+          echo "::endgroup::"
